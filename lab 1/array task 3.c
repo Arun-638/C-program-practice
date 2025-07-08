@@ -12,12 +12,16 @@ int main(int argc,char *argv[]){
                 status[bucket]++;
             }
         }
+        int initial = 1,final = 10;
         for (int i = 0; i < 10; i++)
         {
+            printf("%d-%d :",initial,final);
             for (int j = 0; j < status[i]; j++)
             {
                 printf("#");
             }
+            initial+=10;
+            final+=10;
             printf("\n");
         }
         free(status);

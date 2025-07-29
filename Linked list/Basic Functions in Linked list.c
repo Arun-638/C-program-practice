@@ -15,6 +15,22 @@ void insertAtBeginning(int value) {
     head = newNode;
 }
 
+void insertAtPosition(int value,int position){
+    Node *temp = head,*prev = NULL,*newNode = (Node*)malloc(sizeof(Node));
+    int count=1;
+    if(temp == NULL){
+        printf("Empty list");
+        return;
+    }
+    while(temp!=NULL && count != position){
+        prev = temp;
+        temp = temp->next; 
+        count++;
+    }
+    newNode->data = value;
+    prev->next = newNode;
+    newNode->next = temp;
+}
 void insertAtEnd(int value) {
     Node *newNode = (Node*)malloc(sizeof(Node));
     newNode->data = value;
@@ -88,7 +104,7 @@ void printList() {
 }
 
 void main() {
-    int choice, value;
+    int choice, value,position;
 
     while (1) {
         printf("\n--- Linked List Menu ---\n");
@@ -96,8 +112,9 @@ void main() {
         printf("2. Insert at end\n");
         printf("3. Delete a node\n");
         printf("4. Count nodes\n");
-        printf("5. Display list\n");
-        printf("6. Exit\n");
+        printf("5. Insert Node at any given position\n");
+        printf("6. Display list\n");
+        printf("7. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -121,9 +138,16 @@ void main() {
                 printf("Total nodes = %d\n", countNodes());
                 break;
             case 5:
+                printf("Enter the value you want to put in the node: ");
+                scanf("%d",&value);
+                printf("Enter the position: ");
+                scanf("%d",&position);
+                insertAtPosition(value,position);
+            case 6:
                 printList();
                 break;
-            case 6:
+            case 7:
+                printf("Exiting ....");
                 exit(0);
             default:
                 printf("Invalid choice!\n");

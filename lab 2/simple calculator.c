@@ -42,7 +42,7 @@ void Postfix(char e[]){
     char x = nexttoken(e);
     while (x != '#')
     {
-        if(isalnum(x)){
+        if(isalpha(x)){
             out[j++] = x;
         }
         else if(x == ')'){
@@ -67,15 +67,17 @@ void Postfix(char e[]){
 int eval(char out[]) {
     int val[50];
     int top = -1;
-    char temp[2]; 
-    temp[1] = '\0';
+    // char temp[2]; 
+    // temp[1] = '\0';
 
     for (int i = 0; out[i] != '\0'; i++) {
         char ch = out[i];
 
-        if (isdigit(ch)) {
-            temp[0] = ch;
-            val[++top] = atoi(temp);  
+        if (isalpha(ch)) {
+            printf("Enter the value for %c: ",ch);
+            scanf("%d",&val[++top]);
+            //temp[0] = ch;
+            //val[++top] = atoi(temp);  
         } else {
             int result;
 
@@ -121,6 +123,7 @@ int main(){
     scanf("%s",expression);
     strcat(expression,"#");
     Postfix(expression);
-    printf("Result of the given Infix expression is %d",eval(out));
+    printf("Postfix expression is %s\n",out);
+    printf("Result of the given Infix expression is %d\n",eval(out));
     return 0;
 }

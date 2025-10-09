@@ -40,7 +40,7 @@ void main(){
         printf("Enter the elements : ");
         scanf("%d",&arr[i]);
     }
-    mergesort(arr,0,n);
+    mergesort(arr,0,n-1);
     for(i = 0;i<n;i++){
         printf("%d ",arr[i]);
     }

@@ -13,21 +13,19 @@ struct graph {
 void readgraph(struct graph* adj[]) {
     int i, j, e, w, data;
 
-    for(i = 0; i < MAX; i++) {
+    for(i = 0; i < MAX; i++)
         adj[i] = NULL;
-    }
 
     printf("Enter the number of vertices: ");
     scanf("%d", &n);
 
     for(i = 0; i < n; i++) {
         struct graph* temp = NULL;
-
         printf("Enter the number of edges from vertex v%d: ", i);
         scanf("%d", &e);
 
         for(j = 0; j < e; j++) {
-            printf("Enter the neighbour %d of v%d (int): ", j+1, i);
+            printf("Enter the neighbour of v%d: ", i);
             scanf("%d", &data);
             printf("Enter the edge weight: ");
             scanf("%d", &w);
@@ -37,11 +35,11 @@ void readgraph(struct graph* adj[]) {
             newnode->weight = w;
             newnode->next = NULL;
 
-            if(adj[i] == NULL) {
+            if(adj[i] == NULL)
                 adj[i] = newnode;
-            } else {
+            else
                 temp->next = newnode;
-            }
+
             temp = newnode;
         }
     }
@@ -64,9 +62,7 @@ void dijkstra(struct graph* adj[], int start) {
             }
         }
 
-        if(u == -1){
-            break;
-        }  
+        if(u == -1) break;
         visited[u] = 1;
 
         struct graph* temp = adj[u];
@@ -82,33 +78,32 @@ void dijkstra(struct graph* adj[], int start) {
     }
     printf("\nVertex\tDistance from v%d\tPath\n", start);
     for(int i = 0; i < n; i++) {
-        if(dist[i] == 999) {
+        if(dist[i] == 999)
             printf("%d\tINF\t\t-\n", i);
-        } else {
+        else {
             printf("%d\t%d\t\t", i, dist[i]);
-            // Print path from start to i
-            int current = i;
-            int first = 1;
+            int path[100], k = 0, current = i;
             while(current != -1) {
-                if(first) {
-                    printf("%d", current);
-                    first = 0;
-                } else {
-                    printf(" -> %d", current);
-                }
-                current = prev[current]; // move to previous vertex
+                path[k++] = current;
+                current = prev[current];
+            }
+            for(int j = k-1; j >= 0; j--) {
+                if(j != k-1) printf(" -> ");
+                printf("%d", path[j]);
             }
             printf("\n");
         }
     }
 }
+
 int main() {
     struct graph* adj[MAX];
     readgraph(adj);
-    for (int i = 0; i < MAX; i++)
-    {
-        printf("%d ",adj[i]);
-    }
-    
+    int start;
+    printf("\nEnter the source vertex for Dijkstra: ");
+    scanf("%d", &start);
+
+    dijkstra(adj, start);
+
     return 0;
 }

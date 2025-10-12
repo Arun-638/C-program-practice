@@ -20,11 +20,11 @@ void merge(int a[], int m1, int m2, int n1, int n2) {
     for (i = m1, j = 0; i <= n2; i++, j++)
         a[i] = temp[j];
 }
-void mergeSort(int a[], int i, int j) {
+void mergesort(int a[], int i, int j) {
     if (i < j) {
         int mid = (i + j) / 2;
-        mergeSort(a, i, mid);
-        mergeSort(a, mid + 1, j);
+        mergesort(a, i, mid);
+        mergesort(a, mid + 1, j);
         merge(a, i, mid, mid + 1, j);
     }
 }

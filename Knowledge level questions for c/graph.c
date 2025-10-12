@@ -74,23 +74,21 @@ void dfs(struct node *adj[]) {
         if (!visited[i]) {
             int stack[100], top = -1;
             stack[++top] = i;
+            visited[i]=1;
             while (top != -1) {
                 int u = stack[top--];
-
-                if (!visited[u]) {    
-                    visited[u] = 1;
                     printf("%d ", u);
                     struct node *ptr = adj[u];
                     while (ptr != NULL) {
                         if (!visited[ptr->data]) {
                             stack[++top] = ptr->data;
+                            visited[ptr->data]=1;
                         }
                         ptr = ptr->next;
                     }
                 }
             }
         }
-    }
     printf("\n");
 }
 int main() {

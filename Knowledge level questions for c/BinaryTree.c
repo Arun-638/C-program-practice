@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-
+int i=0,top = -1;
+char stack[50],out[50];
 // -------- Expression Tree Node --------
 struct tree {
     char data;
@@ -17,27 +18,9 @@ struct tree* newNode(char data) {
 }
 
 // -------- Stack for operators (char) --------
-struct CharStack {
-    char arr[100];
-    int top;
-};
-
-void pushChar(struct CharStack* s, char val) {
-    s->arr[++s->top] = val;
+char nexttoken(char e[]){
+    return e[i++];
 }
-
-char popChar(struct CharStack* s) {
-    if (s->top != -1) return s->arr[s->top--];
-    return '\0';
-}
-
-char peekChar(struct CharStack* s) {
-    if (s->top != -1){
-        return s->arr[s->top];
-    } 
-    return '\0';
-}
-
 // -------- Stack for tree nodes --------
 struct TreeStack {
     struct tree* arr[100];
@@ -52,7 +35,61 @@ struct tree* popTree(struct TreeStack* s) {
     if (s->top != -1) return s->arr[s->top--];
     return NULL;
 }
-
+int isp(char op){
+    switch(op){
+        case '+': case '-': return 2;
+        case '*': case '/': return 4;
+        case '^':           return 5;
+        case '(':           return 0;
+        case '#':           return -1;
+    }
+}
+int icp(char op){
+    switch(op){
+        case '+': case '-': return 1;
+        case '*': case '/': return 3;
+        case '^':           return 6;           
+        case '(':           return 9;           
+    }
+}
+char pop(){
+    if(top!=-1){
+        return stack[top--];
+    }
+    return '\0';
+}
+void push(char val){
+    top++;
+    stack[top] = val;
+}
+void Postfix(char e[],char out[]){
+    push('#');
+    int j=0;
+    char x = nexttoken(e);
+    while (x != '#')
+    {
+        if(isalpha(x)){
+            out[j++] = x;
+        }
+        else if(x == ')'){
+            while(stack[top] != '('){
+                out[j++] = pop();
+            }
+            pop();
+        }
+        else{
+        while(isp(stack[top]) >= icp(x)){
+                out[j++] = pop();
+            }
+            push(x);
+        }
+        x = nexttoken(e);
+    }
+    while(stack[top]!='#'){
+        out[j++] = pop();
+    }
+    out[j] = '\0';
+}
 // -------- Build expression tree from postfix --------
 struct tree* expressiontree(char* postfix) {
     struct TreeStack st;
@@ -127,7 +164,7 @@ int main() {
     printf("Enter infix expression: ");
     scanf("%s", infix);
     strcat(infix,"#");
-    Postfix(infix, out);
+    Postfix(infix,out);
 
     struct tree* root = expressiontree(out);
 

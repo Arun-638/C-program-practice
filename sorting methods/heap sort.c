@@ -1,37 +1,54 @@
 #include<stdio.h>
-void heapify(int arr[], int n, int i) {
-    int largest = i;         
-    int left = 2 * i + 1; 
-    int right = 2 * i + 2; 
+void heapsort(int a[], int n) {
+     for (int i = n / 2 - 1; i >= 0; i--) {
+        int j = i;
+        while (1) {
+            int largest = j;
+            int left = 2 * j + 1;
+            int right = 2 * j + 2;
 
+            if (left < n && a[left] > a[largest])
+                largest = left;
 
-    if (left < n && arr[left] > arr[largest])
-        largest = left;
+            if (right < n && a[right] > a[largest])
+                largest = right;
 
-    if (right < n && arr[right] > arr[largest])
-        largest = right;
+            if (largest == j)
+                break;
+            int temp = a[j];
+            a[j] = a[largest];
+            a[largest] = temp;
 
+            j = largest;
+        }
+    }
+    for (int end = n - 1; end > 0; end--) {
+        int temp = a[0];
+        a[0] = a[end];
+        a[end] = temp;
+        int j = 0;
+        while (1) {
+            int largest = j;
+            int left = 2 * j + 1;
+            int right = 2 * j + 2;
 
-    if (largest != i) {
-        int temp = arr[i];
-        arr[i] = arr[largest];
-        arr[largest] = temp;
-        heapify(arr, n, largest);
+            if (left < end && a[left] > a[largest])
+                largest = left;
+
+            if (right < end && a[right] > a[largest])
+                largest = right;
+
+            if (largest == j)
+                break;
+
+            temp = a[j];
+            a[j] = a[largest];
+            a[largest] = temp;
+
+            j = largest;
+        }
     }
 }
-
-void heapSort(int arr[], int n) {
-    for (int i = n / 2 - 1; i >= 0; i--)
-        heapify(arr, n, i);
-
-    for (int i = n - 1; i > 0; i--) {
-        int temp = arr[0];
-        arr[0] = arr[i];
-        arr[i] = temp;
-        heapify(arr, i, 0);
-    }
-}
-
 void main(){
     int n,i;
     printf("Enter the size: ");
@@ -41,7 +58,7 @@ void main(){
         printf("Enter the elements : ");
         scanf("%d",&arr[i]);
     }
-    heapSort(arr,n);
+    heapsort(arr,n);
     for(i = 0;i<n;i++){
         printf("%d ",arr[i]);
     }

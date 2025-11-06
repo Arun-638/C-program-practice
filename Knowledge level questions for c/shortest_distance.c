@@ -52,7 +52,6 @@ void dijkstra(struct graph* adj[], int start) {
         prev[i] = -1;
     }
     dist[start] = 0;
-
     for(int count = 0; count < n; count++) {
         int u = -1, min = 999;
         for(int i = 0; i < n; i++) {

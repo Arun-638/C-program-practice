@@ -39,7 +39,6 @@ void bfs(struct node *adj[]) {
     for (i = 0; i < 100; i++) {
         visited[i] = 0;
     }
-
     printf("\nBFS Traversal: ");
     for (i = 0; i < number_of_vertices; i++) {
         if (visited[i] == 0) {
@@ -77,18 +76,18 @@ void dfs(struct node *adj[]) {
             visited[i]=1;
             while (top != -1) {
                 int u = stack[top--];
-                    printf("%d ", u);
-                    struct node *ptr = adj[u];
-                    while (ptr != NULL) {
-                        if (!visited[ptr->data]) {
-                            stack[++top] = ptr->data;
-                            visited[ptr->data]=1;
-                        }
-                        ptr = ptr->next;
+                printf("%d ", u);
+                struct node *ptr = adj[u];
+                while (ptr != NULL) {
+                    if (!visited[ptr->data]) {
+                        stack[++top] = ptr->data;
+                        visited[ptr->data]=1;
                     }
+                    ptr = ptr->next;
                 }
             }
         }
+    }
     printf("\n");
 }
 int main() {

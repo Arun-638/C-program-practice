@@ -12,7 +12,7 @@ int isp(char op){
         case '*': case '/': return 4;
         case '^':           return 5;
         case '(':           return 0;
-        case '#':           return -1;         
+        case '#':           return -1;
     }
 }
 int icp(char op){
@@ -50,8 +50,8 @@ void Postfix(char e[]){
         else{
         while(isp(stack[top]) >= icp(x)){
                 printf("%c",pop());
-            }
-            push(x);
+        }
+        push(x);
         }
         x = nexttoken(e);
     }

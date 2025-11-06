@@ -148,6 +148,7 @@ void display(struct Poly *poly){
         }
         temp = temp->next;
     }
+    printf("\0");
 }
 
 void main(){

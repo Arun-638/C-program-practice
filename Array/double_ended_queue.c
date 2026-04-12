@@ -4,31 +4,27 @@
 int deque[MAX];
 int front = -1, rear = -1;
 
-int isFull() {
-    return (rear == MAX - 1);
-}
 int isEmpty() {
     return (front == -1);
 }
 void insertRear(int x) {
-    if (isFull()) {
+    if (rear == MAX - 1) {
         printf("\nDeque is full!");
         return;
     }
-    if (front == -1)
+    if (front == -1){
         front = 0;
-    rear++;
-    deque[rear] = x;
+    }
+    deque[++rear] = x;
     printf("\nInserted %d at rear", x);
 }
 void insertFront(int x) {
-    if (front == 0) {
-        printf("\nNo space at front (linear deque)!");
+    if (front == 0 && rear != -1) {
+        printf("\nNo space at front to insert!");
         return;
     }
     if (front == -1) {
-        front = 0;
-        rear = 0;
+        rear=front = 0;
     } else {
         front--;
     }

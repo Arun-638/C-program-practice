@@ -52,7 +52,6 @@ int dequeue() {
     val = pop2();
     return val;
 }
-
 void display() {
     if (isEmpty1() && isEmpty2()) {
         printf("Queue is empty\n");
@@ -61,10 +60,17 @@ void display() {
 
     printf("Queue elements: ");
 
-    for (int i = 0; i <= top2; i++)
-        printf("%d ", s2[i]);
-    for (int i = top1; i >= 0; i--)
-        printf("%d ", s1[i]);
+    if (isEmpty2()) {
+        for (int i = 0; i <= top1; i++)
+            printf("%d ", s1[i]);
+    }
+    else {
+
+        for (int i = top2; i >= 0; i--)
+            printf("%d ", s2[i]);
+        for (int i = 0; i <= top1; i++)
+            printf("%d ", s1[i]);
+    }
 
     printf("\n");
 }

@@ -46,13 +46,9 @@ int main() {
 
     while(count < n) {
         int found = 0;
-
         for(int i = 0; i < n; i++) {
-
             if(finish[i] == 0) {
-
                 int possible = 1;
-
                 for(int j = 0; j < m; j++) {
                     if(need[i][j] > available[j]) {
                         possible = 0;

@@ -1,53 +1,50 @@
-#include<stdio.h>
-#include<string.h>
-#define Q 3
-#define MAX 10
-int n;
-int pid[MAX],bt[MAX],at[MAX],pr[MAX];
-int ct[MAX],tat[MAX],wt[MAX];
+//Scheduling Algorithm - FCFS, SJF, non preemptive Priority, Round Robin
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_PROCESSES 100
+#define TIME_QUANTUM 4
 void swap(int *a,int *b){
     int temp = *a;
     *a = *b;
     *b = temp;
 }
-void SortByArrival(){
+void sort(int P[],int AT[],int BT[],int PR[],int n){
     for(int i=0;i<n-1;i++){
         for(int j=0;j<n-i-1;j++){
-            if(at[j]>at[j+1]){
-                swap(&at[j],&at[j+1]);
-                swap(&bt[j],&bt[j+1]);
-                swap(&pid[j],&pid[j+1]);
-                swap(&pr[j],&pr[j+1]);
+            if(AT[j] > AT[j+1]){
+                swap(&AT[j],&AT[j+1]);
+                swap(&BT[j],&BT[j+1]);
+                swap(&PR[j],&PR[j+1]);
+                swap(&P[j],&P[j+1]);
             }
         }
     }
 }
-double fcfs(){
-    SortByArrival();
-    int time = 0,total = 0;
+int fcfs(int P[], int AT[], int BT[], int n){
+    int ct[MAX_PROCESSES], wt[MAX_PROCESSES], tat[MAX_PROCESSES];
+    int time = 0, total = 0;
     for(int i=0;i<n;i++){
-        if(time<at[i]){
-            time = at[i];
+        if(time < AT[i]){
+            time = AT[i];
         }
-        time+=bt[i];
+        time+= BT[i];
         ct[i] = time;
-        tat[i] = ct[i]-at[i];
-        wt[i] = tat[i]-bt[i];
-        total+=wt[i];
+        tat[i] = ct[i] - AT[i];
+        wt[i] = tat[i] - BT[i];
+        total+= wt[i];
     }
-    return (double)total/n;
+    return total/n;
 }
-double srtf(){
-    int time = 0,total = 0,completed = 0;
-    int rt[MAX];
-    SortByArrival();
-    for(int i =0;i<n;i++){
-        rt[i] = bt[i];
+int srtf(int P[], int AT[], int BT[], int n){
+    int rt[MAX_PROCESSES], wt[MAX_PROCESSES], tat[MAX_PROCESSES],ct[MAX_PROCESSES];
+    int time = 0, total = 0,completed = 0;
+    for(int i=0;i<n;i++){
+        rt[i] = BT[i];
     }
-    while(completed<n){
-        int idx = -1,min = 999;
+    while(completed < n){
+        int idx = -1, min = 9999;
         for(int i=0;i<n;i++){
-            if(at[i]<=time && rt[i]>0 && rt[i]<min){
+            if(AT[i]<=time && rt[i]>0 && rt[i]<min){
                 min = rt[i];
                 idx = i;
             }
@@ -56,28 +53,29 @@ double srtf(){
             time++;
             continue;
         }
-        time++;   
-        rt[idx]--;
-        if (rt[idx]==0){
-            completed++;
-            ct[idx] = time;
-            tat[idx] = ct[idx]-at[idx];
-            wt[idx] = tat[idx]-bt[idx];
-            total+=wt[idx];
+        else{
+            rt[idx]--;
+            time++;
+            if(rt[idx] == 0){
+                completed++;
+                ct[idx] = time;
+                tat[idx] = ct[idx] - AT[idx];
+                wt[idx] = tat[idx] - BT[idx];
+                total+= wt[idx];
+            }
         }
     }
-    return (double)total/n;
+    return total/n;
 }
 
-double priority(){
-    int time = 0,total = 0,completed = 0;
-    int done[MAX] = {0};
-    SortByArrival();
-    while (completed < n){
-        int idx = -1,maxp = -1;
+int priority(int P[], int AT[], int BT[], int PR[], int n){
+    int rt[MAX_PROCESSES], wt[MAX_PROCESSES], tat[MAX_PROCESSES],ct[MAX_PROCESSES];
+    int time = 0, total = 0,completed = 0;
+    while(completed < n){
+        int idx = -1, min = 9999;
         for(int i=0;i<n;i++){
-            if(at[i]<=time && !done[i] && pr[i]>maxp){
-                maxp = pr[i];
+            if(AT[i]<=time && BT[i]>0 && PR[i]<min){
+                min = PR[i];
                 idx = i;
             }
         }
@@ -85,64 +83,66 @@ double priority(){
             time++;
             continue;
         }
-        time+=bt[idx];
-        done[idx] = 1;
-        completed++;
-        ct[idx] = time;
-        tat[idx] = ct[idx]-at[idx];
-        wt[idx] = tat[idx]-bt[idx];
-        total+=wt[idx];
+        else
+        {
+            time+= BT[idx];
+            ct[idx] = time;
+            tat[idx] = ct[idx] - AT[idx];
+            wt[idx] = tat[idx] - BT[idx];
+            total+= wt[idx];
+            completed++;
+            BT[idx] = 0;
+        }
     }
-    return (double)total/n;
+    return total/n;
 }
-
-double RR(){
-    int time = 0, completed = 0, total = 0;
-    int rt[MAX];
-    SortByArrival();
+int round_robin(int P[], int AT[], int BT[], int n){
+    int rt[MAX_PROCESSES], wt[MAX_PROCESSES], tat[MAX_PROCESSES],ct[MAX_PROCESSES];
+    int time = 0, total = 0,completed = 0;
     for(int i=0;i<n;i++){
-        rt[i] = bt[i];
+        rt[i] = BT[i];
     }
-
-    int i = 0;
-
     while(completed < n){
-
-        if(at[i] <= time && rt[i] > 0){
-
-            if(rt[i] > Q){
-                time += Q;
-                rt[i] -= Q;
-            }
-            else{
-                time += rt[i];
-                rt[i] = 0;
-                completed++;
-
-                ct[i] = time;
-                tat[i] = ct[i] - at[i];
-                wt[i] = tat[i] - bt[i];
-
-                total += wt[i];
+        for(int i=0;i<n;i++){
+            if(AT[i]<=time && rt[i]>0){
+                if(rt[i]>TIME_QUANTUM){
+                    time+= TIME_QUANTUM;
+                    rt[i]-= TIME_QUANTUM;
+                }
+                else{
+                    time+= rt[i];
+                    rt[i] = 0;
+                    completed++;
+                    ct[i] = time;
+                    tat[i] = ct[i] - AT[i];
+                    wt[i] = tat[i] - BT[i];
+                    total+= wt[i];
+                }
             }
         }
-        i = (i + 1) % n;
-        if(i == 0 && time < at[0])  
-            time++;
     }
-
-    return (double)total/n;
+    return total/n;
 }
 int main(){
+    int P[MAX_PROCESSES],AT[MAX_PROCESSES],BT[MAX_PROCESSES],PR[MAX_PROCESSES];
+    int n;
     printf("Enter the number of processes: ");
     scanf("%d",&n);
-    for(int i=0;i<n;i++){
-        printf("Enter PID, Burst Time, Arrival Time and Priority of process %d: ",i+1);
-        scanf("%d %d %d %d",&pid[i],&bt[i],&at[i],&pr[i]);
+    for(int i = 0;i<n;i++){
+        printf("Enter Process ID, Arrival Time, Burst Time and Priority for Process %d: ", i+1);
+        scanf("%d %d %d %d",&P[i],&AT[i],&BT[i],&PR[i]);
     }
-    printf("FCFS Average Waiting Time: %lf\n",fcfs());
-    printf("SRTF Average Waiting Time: %lf\n",srtf());
-    printf("Priority Average Waiting Time: %lf\n",priority());
-    printf("Round Robin Average Waiting Time: %lf\n",RR());
-    return 0;
+    sort(P, AT, BT, PR, n);
+    //FCFS
+    printf("\nFCFS Scheduling:\n");
+    printf("Average Waiting Time: %d\n", fcfs(P, AT, BT, n));
+    //SRTF
+    printf("\nSRTF Scheduling:\n");
+    printf("Average Waiting Time: %d\n", srtf(P, AT, BT, n));
+    //Priority
+    printf("\nPriority Scheduling:\n");
+    printf("Average Waiting Time: %d\n", priority(P, AT, BT, PR, n));
+    //Round Robin
+    printf("\nRound Robin Scheduling:\n");
+    printf("Average Waiting Time: %d\n", round_robin(P, AT, BT, n));
 }
